@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'data.dart';
 import 'home_screen.dart';
 import 'categories_screen.dart';
+import 'search_screen.dart';
+import 'settings_screen.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -13,11 +15,13 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int index = 0;
 
-  final titles = ['My Screenshots', 'Categories'];
+  final titles = ['My Screenshots', 'Categories', 'Search', 'Settings'];
 
   Widget currentScreen() {
     if (index == 0) return const HomeScreen();
-    return const CategoriesScreen();
+    if (index == 1) return const CategoriesScreen();
+    if (index == 2) return const SearchScreen();
+    return const SettingsScreen();
   }
 
   @override
@@ -27,6 +31,12 @@ class _MainPageState extends State<MainPage> {
         title: Text(titles[index]),
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () => setState(() => index = 2),
+          ),
+        ],
       ),
       body: currentScreen(),
       floatingActionButton: index == 0
@@ -49,6 +59,9 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
               icon: Icon(Icons.folder), label: 'Categories'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings), label: 'Settings'),
         ],
       ),
     );
