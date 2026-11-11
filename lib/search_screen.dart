@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'data.dart';
 
@@ -9,52 +10,80 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  String query = '';
+  String searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
-    final results = shots
-        .where((s) =>
-    s.title.toLowerCase().contains(query.toLowerCase()) ||
-        s.category.toLowerCase().contains(query.toLowerCase()))
-        .toList();
-
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(12),
-          child: TextField(
-            decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.search),
-              hintText: 'Screenshot ya category dhundo...',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
+    final filteredShots = shots.where((shot) {
+      return shot.title.toLowerCase().contains(
+        searchQuery.toLowerCase(),
+      ) ||
+          shot.category.toLowerCase().contains(
+            searchQuery.toLowerCase(),
+          ) ||
+          shot.tags.any(
+                (tag) => tag.toLowerCase().contains(
+              searchQuery.toLowerCase(),
             ),
-            onChanged: (v) => setState(() => query = v),
-          ),
+          );
+    }).toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Search Screenshots',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        Expanded(
-          child: results.isEmpty
-              ? const Center(child: Text('Kuch nahi mila'))
-              : ListView.builder(
-            itemCount: results.length,
-            itemBuilder: (context, i) {
-              final s = results[i];
-              return ListTile(
-                leading: Icon(s.icon, color: s.color, size: 32),
-                title: Text(s.title),
-                subtitle: Text(s.category),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () async {
-                  await showShotDialog(context, s);
-                  setState(() {});
-                },
-              );
-            },
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Search screenshots...',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    setState(() {
+                      searchQuery = '';
+                    });
+                  },
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  searchQuery = value;
+                });
+              },
+            ),
           ),
-        ),
-      ],
+
+          Expanded(
+            child: filteredShots.isEmpty
+                ? const Center(
+              child: Text(
+                'No screenshots found',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey,
+                ),
+              ),
+            )
+                : ShotGrid(
+              items: filteredShots,
+              onChanged: () {
+                setState(() {});
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -8,32 +9,105 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool autoOrganize = true;
-  bool notifications = false;
+  bool notificationsEnabled = true;
+  bool darkModeEnabled = false;
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        SwitchListTile(
-          secondary: const Icon(Icons.auto_awesome),
-          title: const Text('Auto Organize'),
-          subtitle: const Text('Naye screenshots khud sort hon'),
-          value: autoOrganize,
-          onChanged: (v) => setState(() => autoOrganize = v),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Settings',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        SwitchListTile(
-          secondary: const Icon(Icons.notifications),
-          title: const Text('Notifications'),
-          value: notifications,
-          onChanged: (v) => setState(() => notifications = v),
-        ),
-        const ListTile(
-          leading: Icon(Icons.info),
-          title: Text('About'),
-          subtitle: Text('Smart Screenshot Organizer v1.0'),
-        ),
-      ],
+        centerTitle: true,
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          const CircleAvatar(
+            radius: 40,
+            backgroundColor: Colors.indigo,
+            child: Icon(
+              Icons.person,
+              size: 45,
+              color: Colors.white,
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          const Center(
+            child: Text(
+              'Smart Screenshot Organizer',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 25),
+
+          const Text(
+            'GENERAL',
+            style: TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
+          const SizedBox(height: 10),
+
+          SwitchListTile(
+            secondary: const Icon(Icons.notifications),
+            title: const Text('Notifications'),
+            subtitle: const Text('Enable or disable notifications'),
+            value: notificationsEnabled,
+            onChanged: (value) {
+              setState(() {
+                notificationsEnabled = value;
+              });
+            },
+          ),
+
+          SwitchListTile(
+            secondary: const Icon(Icons.dark_mode),
+            title: const Text('Dark Mode'),
+            subtitle: const Text('Change app appearance'),
+            value: darkModeEnabled,
+            onChanged: (value) {
+              setState(() {
+                darkModeEnabled = value;
+              });
+            },
+          ),
+
+          const Divider(height: 30),
+
+          const Text(
+            'ABOUT',
+            style: TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
+          const SizedBox(height: 10),
+
+          const ListTile(
+            leading: Icon(Icons.info_outline),
+            title: Text('About App'),
+            subtitle: Text('Smart Screenshot Organizer'),
+          ),
+
+          const ListTile(
+            leading: Icon(Icons.verified_outlined),
+            title: Text('App Version'),
+            subtitle: Text('Version 1.0.0'),
+          ),
+        ],
+      ),
     );
   }
 }
