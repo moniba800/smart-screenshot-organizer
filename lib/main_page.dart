@@ -1,7 +1,9 @@
+
 import 'package:flutter/material.dart';
-import 'data.dart';
 import 'home_screen.dart';
 import 'categories_screen.dart';
+import 'search_screen.dart';
+import 'settings_screen.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -11,44 +13,46 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int index = 0;
+  int selectedIndex = 0;
 
-  final titles = ['My Screenshots', 'Categories'];
-
-  Widget currentScreen() {
-    if (index == 0) return const HomeScreen();
-    return const CategoriesScreen();
-  }
+  final List<Widget> screens = [
+    const HomeScreen(),
+    const CategoriesScreen(),
+    const SearchScreen(),
+    const SettingsScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(titles[index]),
-        backgroundColor: Colors.indigo,
-        foregroundColor: Colors.white,
-      ),
-      body: currentScreen(),
-      floatingActionButton: index == 0
-          ? FloatingActionButton(
-        onPressed: () {
+      body: screens[selectedIndex],
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: selectedIndex,
+        onDestinationSelected: (index) {
           setState(() {
-            shots.add(Shot('New Screenshot ${shots.length + 1}', 'Memes',
-                Icons.image, Colors.cyan));
+            selectedIndex = index;
           });
         },
-        child: const Icon(Icons.add_a_photo),
-      )
-          : null,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: index,
-        type: BottomNavigationBarType.fixed,
-        onTap: (i) => setState(() => index = i),
-        selectedItemColor: Colors.indigo,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.folder), label: 'Categories'),
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.category_outlined),
+            selectedIcon: Icon(Icons.category),
+            label: 'Categories',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.settings_outlined),
+            selectedIcon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
         ],
       ),
     );
